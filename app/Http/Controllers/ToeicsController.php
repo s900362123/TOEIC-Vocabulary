@@ -16,23 +16,48 @@ class ToeicsController extends Controller
     public function index()
     {
         //
-        $vocabularies=DB::select('select * from vocabulary ORDER BY RAND() limit '.auth()->user()->several);
+      /*  $vocabularies=DB::select('select * from vocabulary ORDER BY RAND() limit '.auth()->user()->several);
         $data=[
           'vocabularies'=>$vocabularies,
         ];
-        return view('toeic.index',$data);
+        return view('toeic.index',$data);*/
 
-        // uservocabularies=DB::select('select * from uservocabularies where uid=? and svdate=? ',[auth()->user()->id,date("Y-m-d")]);
-        /*uservocabularies::where('uid','=',auth()->user()->id)->where('svdate','=',date("Y-m-d"))->get();
 
-        $att['svdate'] = date("Y-m-d");
-        $att['uid'] = auth()->user()->id;
-        $att['num'] = auth()->user()->several;
-        $att['vocabularies_id'] = '1,3,5,7,9,11,13,15,17,19';
+    /*    $uservocabularies_count =uservocabularies::withCount(['uservocabularies' => function ($query) {
+        $query->where('uid','=',auth()->user()->id)->where('svdate','=',date("Y-m-d"));}])->get();*/
 
-        //uservocabularies::create($att);
-        //return redirect()->route('toeic.index');
-        return  ['vocabularies'=>uservocabularies];*/
+
+
+
+
+
+
+       if(uservocabularies::where('uid','=',auth()->user()->id)->where('svdate','=',date("Y-m-d"))->get()->count()=='0'){
+
+          $att['svdate'] = date("Y-m-d");
+          $att['uid'] = auth()->user()->id;
+          $att['num'] = auth()->user()->several;
+          $att['vocabularies_id'] = '2,4,6,8,10,12,14,16,18,20';
+          uservocabularies::create($att);
+          return redirect()->route('toeic.index');
+
+
+
+
+
+        }else{
+
+          $uservocabularies=uservocabularies::where('uid','=',auth()->user()->id)->where('svdate','=',date("Y-m-d"))->get();
+          foreach ($uservocabularies as $uservocabulary) {
+               $uservc = $uservocabulary->vocabularies_id;
+           }
+
+          return($uservc);
+
+        }
+//
+
+        return(uservocabularies::where('uid','=',auth()->user()->id)->where('svdate','=',date("Y-m-d"))->get()->count());
 
     }
 
